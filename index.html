@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>视频总结工具</title>
+  <title>视频链接</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -57,19 +57,20 @@
 </head>
 <body>
   <div class="container">
-    <h1>🎬 视频内容总结</h1>
+    <h1>🎬 视频链接</h1>
     <div class="input-group">
       <input type="url" id="videoUrl" placeholder="粘贴视频链接..." />
     </div>
-    <button onclick="summarize()">开始总结</button>
-    <p class="tips">支持 YouTube、B站、抖音等主流平台</p>
+    <button onclick="copyLink()">复制链接</button>
+    <p class="tips">支持 YouTube、B站、抖音等</p>
   </div>
   <script>
-    function summarize() {
+    function copyLink() {
       const url = document.getElementById('videoUrl').value.trim();
       if (!url) { alert('请输入视频链接'); return; }
-      const encodeUrl = encodeURIComponent(url);
-      window.location.href = `https://share.desktopgpt.ai/?url=${encodeUrl}`;
+      navigator.clipboard.writeText(url).then(() => {
+        alert('链接已复制！');
+      });
     }
   </script>
 </body>
