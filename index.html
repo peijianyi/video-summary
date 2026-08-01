@@ -66,6 +66,38 @@
           </div>
         </section>
 
+        <section class="note-section" aria-labelledby="note-title">
+          <div class="note-copy">
+            <p class="eyebrow">DATA ENTRY</p>
+            <h2 id="note-title">记录一条备注</h2>
+            <p>
+              填写日期和备注后点击确认，页面会提交到后端接口，再写入
+              <strong>ppforv_com.ppforvcom</strong> 表。
+            </p>
+          </div>
+
+          <form class="note-form" id="noteForm">
+            <label class="field">
+              <span>日期</span>
+              <input id="noteDate" name="data" type="date" required />
+            </label>
+            <label class="field">
+              <span>备注</span>
+              <textarea
+                id="noteText"
+                name="text"
+                rows="4"
+                placeholder="写下今天想记录的内容..."
+                required
+              ></textarea>
+            </label>
+            <div class="form-actions">
+              <button class="confirm-button" type="submit">确认</button>
+              <p class="form-status" id="noteStatus" role="status" aria-live="polite"></p>
+            </div>
+          </form>
+        </section>
+
         <section class="content-stage" aria-live="polite">
           <article class="panel is-active" id="profile" data-panel>
             <div class="section-head">

@@ -16,6 +16,75 @@ tabs.forEach((tab) => {
   });
 });
 
+const noteForm = document.getElementById("noteForm");
+const noteDate = document.getElementById("noteDate");
+const noteText = document.getElementById("noteText");
+const noteStatus = document.getElementById("noteStatus");
+const submitButton = noteForm?.querySelector("button[type='submit']");
+const notesEndpoint = window.PPFORV_NOTES_API || "/api/notes";
+
+if (noteDate && !noteDate.value) {
+  noteDate.value = new Date().toISOString().slice(0, 10);
+}
+
+function setNoteStatus(message, type) {
+  if (!noteStatus) {
+    return;
+  }
+
+  noteStatus.textContent = message;
+  noteStatus.classList.toggle("is-success", type === "success");
+  noteStatus.classList.toggle("is-error", type === "error");
+}
+
+noteForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const data = noteDate.value;
+  const text = noteText.value.trim();
+
+  if (!data || !text) {
+    setNoteStatus("请先填写日期和备注。", "error");
+    return;
+  }
+
+  submitButton.disabled = true;
+  setNoteStatus("正在提交...", "pending");
+
+  try {
+    const response = await fetch(notesEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ data, text }),
+    });
+
+    const isJson = response.headers.get("content-type")?.includes("application/json");
+    const result = isJson ? await response.json().catch(() => ({})) : {};
+
+    if (!response.ok && !isJson) {
+      throw new Error("提交接口还没有部署，暂时无法写入数据库。");
+    }
+
+    if (!response.ok || result.ok === false) {
+      throw new Error(result.message || "提交失败，请稍后重试。");
+    }
+
+    noteText.value = "";
+    setNoteStatus(result.message || "已写入数据库。", "success");
+  } catch (error) {
+    setNoteStatus(
+      error.message === "Failed to fetch"
+        ? "提交接口还没有部署，暂时无法写入数据库。"
+        : error.message,
+      "error",
+    );
+  } finally {
+    submitButton.disabled = false;
+  }
+});
+
 const canvas = document.getElementById("starfield");
 const context = canvas.getContext("2d");
 let stars = [];
